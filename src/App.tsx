@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 const App = () => {
     const { token, login, logout, userId, ready } = useAuth();
     const isAuthenticated = !!token;
-    const routes = useRoutes(isAuthenticated);
+    const routes = useRoutes();
 
     return (
         <AuthContext.Provider
