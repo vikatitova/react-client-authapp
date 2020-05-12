@@ -8,11 +8,4 @@ export const logout = () => {
     localStorage.removeItem(TOKEN_KEY);
 };
 
-export const isLogin = () => {
-    return true;
-    // if (localStorage.getItem(TOKEN_KEY)) {
-    //     return true;
-    // }
-
-    // return false;
-};
+export const isLogin = () => !!localStorage.getItem(TOKEN_KEY);

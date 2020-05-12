@@ -27,14 +27,14 @@ const AuthForm = () => {
     });
 
     const handleSubmit = (event: any) => {
+        event.preventDefault();
+
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
-            event.preventDefault();
             event.stopPropagation();
         }
-        event.preventDefault();
-        setValidated(true);
 
+        setValidated(true);
         const { email, password } = formInput;
 
         if (AuthPageName.LOGIN) {
