@@ -46,7 +46,7 @@ const AuthForm = () => {
             loginCustomer(email, password);
         } else {
             try {
-                const data = await signupCustomer(email, password);
+                const message = await signupCustomer(email, password);
                 addNotification(message, 'notify');
                 setShow(true);
             } catch (err) {
