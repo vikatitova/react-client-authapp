@@ -5,6 +5,8 @@ import { loginCustomer } from '../controllers/login.controller';
 import { signupCustomer } from '../controllers/signup.controller';
 import { AuthFormMapping } from '../shared/constants';
 import { AuthPageName } from '../shared/interfaces';
+import { Notify } from './Notify';
+import { useNotify } from '../hooks/notify.hook';
 
 const StyledForm = styled(Form)`
     margin: 0 auto;
@@ -18,33 +20,44 @@ const StyledPageName = styled.h1`
 `;
 
 const AuthForm = () => {
-    const authFormName = AuthFormMapping[window.location.pathname];
-
+    const authFormName: string = AuthFormMapping[window.location.pathname];
+    const authPathName: string = window.location.pathname;
+    const [show, setShow] = useState(false);
+    const { message, type, addNotification } = useNotify();
     const [validated, setValidated] = useState(false);
     const [formInput, setFormInput] = useState({
         email: '',
         password: '',
     });
 
-    const handleSubmit = (event: any) => {
+    const handleSubmit = async (event: any): Promise<void> => {
         event.preventDefault();
 
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.stopPropagation();
+        } else {
+            setValidated(true);
         }
 
-        setValidated(true);
         const { email, password } = formInput;
 
-        if (AuthPageName.LOGIN) {
+        if (AuthPageName.LOGIN === authPathName) {
             loginCustomer(email, password);
         } else {
-            signupCustomer(email, password);
+            try {
+                const data = await signupCustomer(email, password);
+                addNotification(message, 'notify');
+                setShow(true);
+            } catch (err) {
+                const { message } = err;
+                addNotification(message, 'error');
+                setShow(true);
+            }
         }
     };
 
-    const changeHandler = (event: any) => {
+    const changeHandler = (event: any): void => {
         setFormInput({
             ...formInput,
             [event.target.name]: event.target.value,
@@ -53,6 +66,12 @@ const AuthForm = () => {
 
     return (
         <Container>
+            <Notify
+                message={message}
+                type={type}
+                setShow={setShow}
+                show={show}
+            />
             <StyledPageName>{authFormName} Page</StyledPageName>
             <StyledForm
                 noValidate
