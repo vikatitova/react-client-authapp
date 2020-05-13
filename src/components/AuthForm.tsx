@@ -43,8 +43,15 @@ const AuthForm = () => {
         const { email, password } = formInput;
 
         if (AuthPageName.LOGIN === authPathName) {
-            // TODO add notification + add controller
-            loginCustomer(email, password);
+            try {
+                const message = await loginCustomer(email, password);
+                addNotification(message, 'info');
+                setShow(true);
+            } catch (err) {
+                const { message } = err;
+                addNotification(message, 'error');
+                setShow(true);
+            }
         } else {
             try {
                 const message = await signupCustomer(email, password);
