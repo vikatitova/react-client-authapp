@@ -1,6 +1,11 @@
 import { Component } from 'react';
 import React from 'react';
 import { Toast } from 'react-bootstrap';
+import styled from 'styled-components';
+
+const StyledMessage: any = styled.span`
+    color: ${(props: any) => (props.type === 'info' ? 'darkgreen' : 'red')};
+`;
 
 interface INotifyProps {
     message: string;
@@ -14,7 +19,6 @@ export class Notify extends Component<INotifyProps> {
         super(props);
     }
     render() {
-        console.log(this.props);
         return (
             <div
                 aria-live='polite'
@@ -42,7 +46,11 @@ export class Notify extends Component<INotifyProps> {
                             </strong>
                             {}
                         </Toast.Header>
-                        <Toast.Body>{this.props.message}</Toast.Body>
+                        <Toast.Body>
+                            <StyledMessage type={this.props.type}>
+                                {this.props.message}
+                            </StyledMessage>
+                        </Toast.Body>
                     </Toast>
                 </div>
             </div>
