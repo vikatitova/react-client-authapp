@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { loginCustomer } from '../controllers/login.controller';
 import { signupCustomer } from '../controllers/signup.controller';
 import { AuthFormMapping } from '../shared/constants';
-import { AuthPageName } from '../shared/interfaces';
+import { AuthPageName } from '../shared/interfaces/common';
 import { Notify } from './Notify';
 import { useNotify } from '../hooks/notify.hook';
 

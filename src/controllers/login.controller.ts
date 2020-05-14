@@ -1,5 +1,5 @@
-import ITransportLayer from '../transport.interface';
 import TransportLayer from '../transport-layer.service';
+import ITransportLayer from '../shared/interfaces/transport-layer.interfaces';
 
 const transportLayer: ITransportLayer = new TransportLayer();
 

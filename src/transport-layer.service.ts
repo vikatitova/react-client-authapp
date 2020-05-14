@@ -1,15 +1,10 @@
-import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
-import { IServerConfiguration } from './shared/interfaces';
-import ITransportLayer from './transport.interface';
-
-const config: IServerConfiguration = {
-    baseURL: 'http://127.0.0.1:3337',
-    timeout: 100000,
-    headers: {},
-};
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { config } from './shared/utils';
+import ITransportLayer from './shared/interfaces/transport-layer.interfaces';
 
 export default class TransportLayer implements ITransportLayer {
     private instance: AxiosInstance;
+    private static _instance: TransportLayer;
 
     constructor() {
         this.instance = axios.create(config);
@@ -38,6 +33,12 @@ export default class TransportLayer implements ITransportLayer {
                 });
             }
         );
+    }
+
+    static get getInstance(): TransportLayer {
+        TransportLayer._instance =
+            TransportLayer._instance || new TransportLayer();
+        return TransportLayer._instance;
     }
 
     get(url: string, config?: any): Promise<any> {

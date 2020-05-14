@@ -1,7 +1,6 @@
-import ITransportLayer from '../transport.interface';
 import TransportLayer from '../transport-layer.service';
-
-const transportLayer: ITransportLayer = new TransportLayer();
+import ITransportLayer from '../shared/interfaces/transport-layer.interfaces';
+const transportLayer: ITransportLayer = TransportLayer.getInstance;
 
 export const signupCustomer = async (
     email: string,
