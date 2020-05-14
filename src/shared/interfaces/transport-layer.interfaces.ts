@@ -1,7 +1,9 @@
 import { AxiosRequestConfig } from 'axios';
 
-export interface IResource {
-    id: string;
+export interface IServerConfiguration {
+    baseURL: string;
+    timeout: number;
+    headers: object;
 }
 
 export default interface ITransportLayer {
