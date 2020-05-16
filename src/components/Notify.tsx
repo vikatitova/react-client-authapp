@@ -37,8 +37,8 @@ export class Notify extends Component<INotifyProps> {
                     <Toast
                         onClose={() => this.props.setShow(false)}
                         show={this.props.show}
-                        // delay={3000}
-                        // autohide
+                        delay={2000}
+                        autohide
                     >
                         <Toast.Header>
                             <strong className='mr-auto'>
