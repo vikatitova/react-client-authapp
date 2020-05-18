@@ -1,38 +1,54 @@
 import { useState, useCallback, useEffect } from 'react';
-
-const storageName = 'userData';
+import { STORAGE_NAME } from '../shared/constants';
 
 export const useAuth = () => {
-    const [token, setToken] = useState(null);
-    const [ready, setReady] = useState(false);
-    const [userId, setUserId] = useState(null);
+    const [token, setToken] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [avatarSrc, setAvatarSrc] = useState<string>('');
 
-    const login: any = useCallback((jwtToken: any, id: any) => {
-        setToken(jwtToken);
-        setUserId(id);
+    const login: any = useCallback((token: string, email: string) => {
+        setToken(token);
+        setEmail(email);
 
         localStorage.setItem(
-            storageName,
+            STORAGE_NAME,
             JSON.stringify({
-                userId: id,
-                token: jwtToken,
+                token,
+                email,
             })
         );
     }, []);
 
     const logout = useCallback(() => {
-        // setToken(null);
-        // setUserId(null);
-        // localStorage.removeItem(storageName);
+        setToken('');
+        localStorage.removeItem(STORAGE_NAME);
+    }, []);
+
+    const setAvatar: any = useCallback((path: string) => {
+        setAvatarSrc(path);
+
+        const storageItem: any = localStorage.getItem(STORAGE_NAME);
+        const data = JSON.parse(storageItem);
+        data.avatarSrc = path;
+
+        localStorage.setItem(
+            STORAGE_NAME,
+            JSON.stringify({
+                ...data,
+            })
+        );
     }, []);
 
     useEffect(() => {
-        // const data = JSON.parse(localStorage.getItem(storageName));
-        // if (data && data.token) {
-        //     login(data.token, data.userId);
-        // }
-        // setReady(true);
-    }, [login]);
+        const storageItem: any = localStorage.getItem(STORAGE_NAME);
+        const data = JSON.parse(storageItem);
+        if (data && data.token && data.email) {
+            login(data.token, data.email);
+        }
+        if (data && data.avatarSrc) {
+            setAvatar(data.avatarSrc);
+        }
+    }, [login, setAvatar]);
 
-    return { login, logout, token, userId, ready };
+    return { login, logout, token, email, avatarSrc, setAvatar };
 };

@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { config } from './shared/utils';
 import ITransportLayer from './shared/interfaces/transport-layer.interfaces';
+import { STORAGE_NAME } from './shared/constants';
 
 export default class TransportLayer implements ITransportLayer {
     private instance: AxiosInstance;
@@ -12,9 +13,12 @@ export default class TransportLayer implements ITransportLayer {
         this.instance.interceptors.request.use(function (
             requestConfig: AxiosRequestConfig
         ) {
-            const cookie: string = 'This is cookie';
-            if (cookie) {
-                requestConfig.headers.Authorization = `Bearer ${cookie}`;
+            const storageItem: any = localStorage.getItem(STORAGE_NAME);
+            if (storageItem) {
+                const { token } = JSON.parse(storageItem);
+                if (token) {
+                    requestConfig.headers.Authorization = `Bearer ${token}`;
+                }
             }
             return requestConfig;
         });

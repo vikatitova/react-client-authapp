@@ -15,9 +15,9 @@ const Wrapper = styled.div`
 `;
 
 const App = () => {
-    const { token, login, logout, userId, ready } = useAuth();
-    const isAuthenticated = !!token;
-    const routes = useRoutes();
+    const { token, login, logout, email, avatarSrc, setAvatar } = useAuth();
+    const isAuthenticated: boolean = !!token;
+    const routes = useRoutes(isAuthenticated);
 
     return (
         <AuthContext.Provider
@@ -25,8 +25,10 @@ const App = () => {
                 token,
                 login,
                 logout,
-                userId,
+                email,
                 isAuthenticated,
+                avatarSrc,
+                setAvatar,
             }}
         >
             <Router>

@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import React, { useState, useContext } from 'react';
+import { Button, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 import styled from 'styled-components';
 import { loginCustomer } from '../controllers/login.controller';
 import { signupCustomer } from '../controllers/signup.controller';
 import { AuthFormMapping } from '../shared/constants';
-import { AuthPageName } from '../shared/interfaces/common';
+import { AuthPageName, IAuthResponse } from '../shared/interfaces/common';
 import { Notify } from './Notify';
 import { useNotify } from '../hooks/notify.hook';
+import { AuthContext } from '../context/AuthContext';
 
 const StyledForm = styled(Form)`
     margin: 0 auto;
@@ -22,6 +23,8 @@ const StyledPageName = styled.h1`
 const AuthForm = () => {
     const authFormName: string = AuthFormMapping[window.location.pathname];
     const authPathName: string = window.location.pathname;
+    const [isLoading, setLoading] = useState(false);
+    const auth = useContext(AuthContext);
     const [show, setShow] = useState(false);
     const { message, type, addNotification } = useNotify();
     const [validated, setValidated] = useState(false);
@@ -36,6 +39,7 @@ const AuthForm = () => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.stopPropagation();
+            return;
         } else {
             setValidated(true);
         }
@@ -44,25 +48,44 @@ const AuthForm = () => {
 
         if (AuthPageName.LOGIN === authPathName) {
             try {
-                const message = await loginCustomer(email, password);
-                addNotification(message, 'info');
+                setLoading(true);
+                const res: IAuthResponse = await loginCustomer(email, password);
+                auth.login(res.token, email);
+                if (res.path) {
+                    auth.setAvatar(res.path);
+                }
+                addNotification(res.message, 'info');
                 setShow(true);
+                setLoading(false);
             } catch (err) {
                 const { message } = err;
                 addNotification(message, 'error');
                 setShow(true);
+                setLoading(false);
             }
         } else {
             try {
-                const message = await signupCustomer(email, password);
-                addNotification(message, 'info');
+                setLoading(true);
+                const res: IAuthResponse = await signupCustomer(
+                    email,
+                    password
+                );
+                addNotification(res.message, 'info');
                 setShow(true);
+                setLoading(false);
             } catch (err) {
                 const { message } = err;
                 addNotification(message, 'error');
                 setShow(true);
+                setLoading(false);
             }
         }
+
+        setFormInput({
+            email: '',
+            password: '',
+        });
+        setValidated(false);
     };
 
     const changeHandler = (event: any): void => {
@@ -120,7 +143,20 @@ const AuthForm = () => {
 
                 <Form.Group as={Row}>
                     <Col sm={{ span: 10, offset: 2 }}>
-                        <Button type='submit'>{authFormName}</Button>
+                        {isLoading ? (
+                            <Button variant='primary' disabled>
+                                <Spinner
+                                    as='span'
+                                    animation='border'
+                                    size='sm'
+                                    role='status'
+                                    aria-hidden='true'
+                                />
+                                <span className='sr-only'>Loading...</span>
+                            </Button>
+                        ) : (
+                            <Button type='submit'>{authFormName}</Button>
+                        )}
                     </Col>
                 </Form.Group>
             </StyledForm>

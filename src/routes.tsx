@@ -1,43 +1,69 @@
 import React, { Fragment } from 'react';
-import { Redirect, Switch, Route } from 'react-router-dom';
-import Home from './components/Home';
+import {
+    Redirect,
+    Route,
+    Switch,
+    BrowserRouter,
+    Router,
+} from 'react-router-dom';
 import AuthForm from './components/AuthForm';
-import { useAuth } from './hooks/auth.hook';
+import Home from './components/Home';
+import { IRouteProps } from './shared/interfaces/common';
+import Users from './components/Users';
 
-const PrivateRoute = (props: any) => {
-    const { token } = useAuth();
-    const isAuthenticated = !!token;
+const PrivateRoute = ({
+    component: Component,
+    isAuthenticated,
+    ...rest
+}: IRouteProps) => (
+    <Route
+        {...rest}
+        render={(props) =>
+            isAuthenticated ? <Component {...props} /> : <Redirect to='/' />
+        }
+    ></Route>
+);
 
-    return (
-        <Fragment>
-            {isAuthenticated ? props.children : <Redirect to='/' />}
-        </Fragment>
-    );
-};
+const PublicRoute = ({
+    component: Component,
+    isAuthenticated,
+    ...rest
+}: IRouteProps) => (
+    <Route
+        {...rest}
+        render={(props) =>
+            isAuthenticated ? <Redirect to='/' /> : <Component {...props} />
+        }
+    ></Route>
+);
 
-const PublicRoute = (props: any) => {
-    const { token } = useAuth();
-    const isAuthenticated = !!token;
-
-    return (
-        <Fragment>
-            {isAuthenticated ? <Redirect to='/' /> : props.children}
-        </Fragment>
-    );
-};
-
-export const useRoutes = () => {
+export const useRoutes = (isAuthenticated: boolean) => {
     return (
         <Switch>
-            <PublicRoute>
-                <Route component={Home} path='/' exact />
-                <Route component={AuthForm} path='/signup' exact />
-                <Route component={AuthForm} path='/login' exact />
-            </PublicRoute>
+            <Route component={Home} path='/' exact />
 
-            <PrivateRoute>
-                {/* <Route component={Users} path='/users' exact /> */}
-            </PrivateRoute>
+            <PublicRoute
+                component={AuthForm}
+                isAuthenticated={isAuthenticated}
+                path='/signup'
+                exact
+            />
+
+            <PublicRoute
+                component={AuthForm}
+                isAuthenticated={isAuthenticated}
+                path='/login'
+                exact
+            />
+
+            <PrivateRoute
+                component={Users}
+                isAuthenticated={isAuthenticated}
+                path='/users'
+                exact
+            />
+
+            <Redirect to='/' />
         </Switch>
     );
 };

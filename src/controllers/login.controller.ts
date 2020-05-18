@@ -1,20 +1,21 @@
 import TransportLayer from '../transport-layer.service';
 import ITransportLayer from '../shared/interfaces/transport-layer.interfaces';
+import { IAuthResponse } from '../shared/interfaces/common';
 
-const transportLayer: ITransportLayer = new TransportLayer();
+const transportLayer: ITransportLayer = TransportLayer.getInstance;
 
 export const loginCustomer = async (
     email: string,
     password: string
-): Promise<string> => {
+): Promise<IAuthResponse> => {
     try {
-        const data = await transportLayer.post('auth/login', {
+        const { data } = await transportLayer.post('auth/login', {
             email,
             password,
         });
-        return data.data.message;
+        return data;
     } catch (err) {
-        throw new Error(err.data.message);
-        console.log(err);
+        const { message } = err.data;
+        throw new Error(message);
     }
 };

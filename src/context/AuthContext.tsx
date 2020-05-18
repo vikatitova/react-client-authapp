@@ -1,11 +1,11 @@
 import { createContext } from 'react';
 
-const noop = (): any => {};
-
 export const AuthContext = createContext({
-    token: null,
-    userId: null,
-    login: noop,
-    logout: noop,
+    token: '',
+    login: (token: string | undefined, email: string): any => {},
+    logout: (): any => {},
+    email: '',
+    setAvatar: (path: string): any => {},
     isAuthenticated: false,
+    avatarSrc: '',
 });
