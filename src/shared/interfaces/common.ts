@@ -16,3 +16,21 @@ export interface IRouteProps {
     path: string;
     exact: any;
 }
+
+export interface ISaveUserResponse {
+    name: string;
+    age: string;
+    id: string;
+}
+
+export interface IContextProps {
+    token: string | undefined;
+    login(token: string | undefined, email: string): any;
+    logout(): any;
+    email: string;
+    setAvatar(path: string): any;
+    isAuthenticated: boolean;
+    avatarSrc: string;
+    users: ISaveUserResponse[];
+    addUsers(users: ISaveUserResponse[]): any;
+}

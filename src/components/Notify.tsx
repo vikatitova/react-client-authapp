@@ -1,5 +1,4 @@
-import { Component } from 'react';
-import React from 'react';
+import React, { Component } from 'react';
 import { Toast } from 'react-bootstrap';
 import styled from 'styled-components';
 
@@ -10,14 +9,17 @@ const StyledMessage: any = styled.span`
 interface INotifyProps {
     message: string;
     type: string;
-    setShow(setShow: boolean): void;
-    show: boolean;
+    setShow(show: boolean): void;
 }
 
-export class Notify extends Component<INotifyProps> {
+export class Notify extends Component<INotifyProps, any> {
     constructor(props: any) {
         super(props);
+        this.state = {
+            show: true,
+        };
     }
+
     render() {
         return (
             <div
@@ -30,13 +32,13 @@ export class Notify extends Component<INotifyProps> {
                 <div
                     style={{
                         position: 'absolute',
-                        top: 0,
+                        top: `${-150}px`,
                         right: 0,
                     }}
                 >
                     <Toast
                         onClose={() => this.props.setShow(false)}
-                        show={this.props.show}
+                        show={this.state.show}
                         delay={2000}
                         autohide
                     >
@@ -44,7 +46,6 @@ export class Notify extends Component<INotifyProps> {
                             <strong className='mr-auto'>
                                 System Notification
                             </strong>
-                            {}
                         </Toast.Header>
                         <Toast.Body>
                             <StyledMessage type={this.props.type}>

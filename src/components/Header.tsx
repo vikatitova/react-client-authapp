@@ -40,7 +40,7 @@ const StyledImgWrapper: any = styled.div`
 
 const StyledImg: any = styled.img`
     width: 100%;
-    height: auto;
+    height: 100%;
 `;
 
 const StyledEmail: any = styled.span`
