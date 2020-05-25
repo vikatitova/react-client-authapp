@@ -25,20 +25,19 @@ const AuthForm = () => {
     const authPathName: string = window.location.pathname;
     const [isLoading, setLoading] = useState(false);
     const auth = useContext(AuthContext);
-    const [show, setShow] = useState(false);
-    const { message, type, addNotification } = useNotify();
+    const { message, type, addNotification, show, setShow } = useNotify();
     const [validated, setValidated] = useState(false);
     const [formInput, setFormInput] = useState({
         email: '',
         password: '',
     });
 
-    const handleSubmit = async (event: any): Promise<void> => {
-        event.preventDefault();
+    const handleSubmit = async (e: any): Promise<void> => {
+        e.preventDefault();
 
-        const form = event.currentTarget;
+        const form = e.currentTarget;
         if (form.checkValidity() === false) {
-            event.stopPropagation();
+            e.stopPropagation();
             return;
         } else {
             setValidated(true);
@@ -55,12 +54,10 @@ const AuthForm = () => {
                     auth.setAvatar(res.path);
                 }
                 addNotification(res.message, 'info');
-                setShow(true);
                 setLoading(false);
             } catch (err) {
                 const { message } = err;
                 addNotification(message, 'error');
-                setShow(true);
                 setLoading(false);
             }
         } else {
@@ -71,12 +68,10 @@ const AuthForm = () => {
                     password
                 );
                 addNotification(res.message, 'info');
-                setShow(true);
                 setLoading(false);
             } catch (err) {
                 const { message } = err;
                 addNotification(message, 'error');
-                setShow(true);
                 setLoading(false);
             }
         }
@@ -88,21 +83,16 @@ const AuthForm = () => {
         setValidated(false);
     };
 
-    const changeHandler = (event: any): void => {
+    const changeHandler = (e: any): void => {
         setFormInput({
             ...formInput,
-            [event.target.name]: event.target.value,
+            [e.target.name]: e.target.value,
         });
     };
 
     return (
         <Container>
-            <Notify
-                message={message}
-                type={type}
-                setShow={setShow}
-                show={show}
-            />
+            {show && <Notify message={message} type={type} setShow={setShow} />}
             <StyledPageName>{authFormName} Page</StyledPageName>
             <StyledForm
                 noValidate

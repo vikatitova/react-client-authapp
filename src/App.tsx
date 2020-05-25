@@ -5,6 +5,7 @@ import { AuthContext } from './context/AuthContext';
 import { useAuth } from './hooks/auth.hook';
 import { useRoutes } from './routes';
 import styled from 'styled-components';
+import { useUsers } from './hooks/users.hook';
 
 const Wrapper = styled.div`
     padding-top: 70px;
@@ -16,6 +17,7 @@ const Wrapper = styled.div`
 
 const App = () => {
     const { token, login, logout, email, avatarSrc, setAvatar } = useAuth();
+    const { users, addUsers } = useUsers();
     const isAuthenticated: boolean = !!token;
     const routes = useRoutes(isAuthenticated);
 
@@ -29,6 +31,8 @@ const App = () => {
                 isAuthenticated,
                 avatarSrc,
                 setAvatar,
+                users,
+                addUsers,
             }}
         >
             <Router>
