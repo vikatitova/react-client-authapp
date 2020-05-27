@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
 import { Button, Container, Nav, Navbar } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
-import logo from '../img/logo.svg';
-import { AuthContext } from '../context/AuthContext';
-import Avatar from 'react-avatar';
 import styled from 'styled-components';
+import { AuthContext } from '../context/AuthContext';
 import { saveCustomerAvatar } from '../controllers/avatar.controller';
+import logo from '../img/logo.svg';
 
 const FileWrapper: any = styled.div`
     display: flex;

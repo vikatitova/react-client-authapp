@@ -1,15 +1,9 @@
-import React, { Fragment } from 'react';
-import {
-    Redirect,
-    Route,
-    Switch,
-    BrowserRouter,
-    Router,
-} from 'react-router-dom';
+import React from 'react';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import AuthForm from './components/AuthForm';
 import Home from './components/Home';
+import UsersContainer from './containers/UsersContainer';
 import { IRouteProps } from './shared/interfaces/common';
-import Users from './components/Users';
 
 const PrivateRoute = ({
     component: Component,
@@ -57,7 +51,7 @@ export const useRoutes = (isAuthenticated: boolean) => {
             />
 
             <PrivateRoute
-                component={Users}
+                component={UsersContainer}
                 isAuthenticated={isAuthenticated}
                 path='/users'
                 exact
