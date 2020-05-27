@@ -1,10 +1,23 @@
 import DeleteFormModal from '../components/modals/DeleteFormModal';
 import { connect } from 'react-redux';
+import { openModal, closeModal } from '../actions/users.action';
+import { bindActionCreators } from 'redux';
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapStateToProps = (state: any) => {
     return {
-        dispatch,
+        modal: state.users,
     };
 };
 
-export default connect(null, mapDispatchToProps)(DeleteFormModal);
+const mapDispatchToProps = (dispatch: any) => {
+    const actions = bindActionCreators(
+        {
+            openModal,
+            closeModal,
+        },
+        dispatch
+    );
+    return { ...actions, dispatch };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteFormModal);

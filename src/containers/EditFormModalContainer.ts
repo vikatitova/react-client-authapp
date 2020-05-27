@@ -1,10 +1,23 @@
 import EditFormModal from '../components/modals/EditFormModal';
 import { connect } from 'react-redux';
+import { openModal, closeModal } from '../actions/users.action';
+import { bindActionCreators } from 'redux';
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapStateToProps = (state: any) => {
     return {
-        dispatch,
+        modal: state.users,
     };
 };
 
-export default connect(null, mapDispatchToProps)(EditFormModal);
+const mapDispatchToProps = (dispatch: any) => {
+    const actions = bindActionCreators(
+        {
+            openModal,
+            closeModal,
+        },
+        dispatch
+    );
+    return { ...actions, dispatch };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditFormModal);

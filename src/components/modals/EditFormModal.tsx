@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 
 const EditFormModal = (props: any) => {
-    const { user, editUser, isModalOpen } = props;
+    const {
+        user,
+        editUser,
+        modal: { isModalOpen },
+    } = props;
     const [validated, setValidated] = useState(false);
     const [formInput, setFormInput] = useState(user);
 
-    const handleClose = () =>
-        props.dispatch({
-            type: 'CLOSE_MODAL',
-            modalType: 'EDIT',
-        });
+    const handleClose = () => props.closeModal('EDIT');
 
     const changeHandler = (event: any): void => {
         setFormInput({

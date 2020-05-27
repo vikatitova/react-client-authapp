@@ -47,6 +47,7 @@ const ActionsWrapper: any = styled.div`
 const Users = (props: any) => {
     const {
         modal: { isModalOpen, modalType },
+        openModal,
     } = props;
     const { message, type, addNotification, show, setShow } = useNotify();
     const [selectedUser, setSelectedUser] = useState({});
@@ -85,10 +86,7 @@ const Users = (props: any) => {
                             <Button
                                 variant='outline-danger'
                                 onClick={() => {
-                                    props.dispatch({
-                                        type: 'OPEN_MODAL',
-                                        modalType: 'DELETE',
-                                    });
+                                    openModal('DELETE');
                                     setSelectedUser(user);
                                 }}
                             >
@@ -158,10 +156,7 @@ const Users = (props: any) => {
 
     const handleEditUser = async (user: IUser) => {
         await getUser(user);
-        props.dispatch({
-            type: 'OPEN_MODAL',
-            modalType: 'EDIT',
-        });
+        openModal('EDIT');
     };
 
     useEffect(() => {
@@ -175,14 +170,12 @@ const Users = (props: any) => {
             {show && <Notify message={message} type={type} setShow={setShow} />}
             {isModalOpen && modalType === 'DELETE' && (
                 <DeleteFormModalContainer
-                    isModalOpen={isModalOpen}
                     user={selectedUser}
                     deleteUser={deleteUser}
                 />
             )}
             {isModalOpen && modalType === 'EDIT' && (
                 <EditFormModalContainer
-                    isModalOpen={isModalOpen}
                     user={editableUser}
                     editUser={editUser}
                 />

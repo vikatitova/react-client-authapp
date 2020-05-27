@@ -2,13 +2,13 @@ import React from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 
 const DeleteFormModal = (props: any) => {
-    const { user, deleteUser, isModalOpen } = props;
+    const {
+        user,
+        deleteUser,
+        modal: { isModalOpen },
+    } = props;
 
-    const handleClose = () =>
-        props.dispatch({
-            type: 'CLOSE_MODAL',
-            modalType: 'DELETE',
-        });
+    const handleClose = () => props.closeModal('DELETE');
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
