@@ -17,7 +17,7 @@ export interface IRouteProps {
     exact: any;
 }
 
-export interface ISaveUserResponse {
+export interface IUser {
     name: string;
     age: string;
     id: string;
@@ -31,6 +31,8 @@ export interface IContextProps {
     setAvatar(path: string): any;
     isAuthenticated: boolean;
     avatarSrc: string;
-    users: ISaveUserResponse[];
-    addUsers(users: ISaveUserResponse[]): any;
+    users: IUser[];
+    addUsers(users: IUser[]): any;
+    deleteUser(user: any): any;
+    editUser(user: any): any;
 }

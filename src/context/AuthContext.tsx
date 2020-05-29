@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { IContextProps, ISaveUserResponse } from '../shared/interfaces/common';
+import { IContextProps, IUser } from '../shared/interfaces/common';
 
 export const AuthContext = createContext({
     token: '',
@@ -10,5 +10,7 @@ export const AuthContext = createContext({
     isAuthenticated: false,
     avatarSrc: '',
     users: [],
-    addUsers: (users: ISaveUserResponse[]): any => {},
+    addUsers: (users: IUser[]): any => {},
+    deleteUser: (user: any): any => {},
+    editUser: (user: any): any => {},
 } as IContextProps);

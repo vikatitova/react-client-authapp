@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 
-const AddFormModal = (props: any) => {
+const EditFormModal = (props: any) => {
+    const {
+        user,
+        editUser,
+        modal: { isModalOpen },
+    } = props;
     const [validated, setValidated] = useState(false);
-    const [show, setShow] = useState(false);
-    const [formInput, setFormInput] = useState({
-        name: '',
-        age: '',
-    });
+    const [formInput, setFormInput] = useState(user);
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleClose = () => props.closeModal('EDIT');
 
     const changeHandler = (event: any): void => {
         setFormInput({
@@ -30,7 +30,7 @@ const AddFormModal = (props: any) => {
             setValidated(true);
         }
 
-        props.saveUser(formInput);
+        editUser(formInput);
         setFormInput({
             name: '',
             age: '',
@@ -41,14 +41,10 @@ const AddFormModal = (props: any) => {
 
     return (
         <>
-            <Button variant='success' onClick={handleShow}>
-                Add New User
-            </Button>
-
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={isModalOpen} onHide={handleClose}>
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Add New User</Modal.Title>
+                        <Modal.Title>Edit User {user.name}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form.Group as={Row}>
@@ -96,4 +92,4 @@ const AddFormModal = (props: any) => {
     );
 };
 
-export default AddFormModal;
+export default EditFormModal;

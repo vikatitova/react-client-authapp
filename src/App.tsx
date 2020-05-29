@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 
 const App = () => {
     const { token, login, logout, email, avatarSrc, setAvatar } = useAuth();
-    const { users, addUsers } = useUsers();
+    const { users, addUsers, deleteUser, editUser } = useUsers();
     const isAuthenticated: boolean = !!token;
     const routes = useRoutes(isAuthenticated);
 
@@ -33,6 +33,8 @@ const App = () => {
                 setAvatar,
                 users,
                 addUsers,
+                deleteUser,
+                editUser,
             }}
         >
             <Router>

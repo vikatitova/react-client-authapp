@@ -1,18 +1,21 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { Col, Container, Row, Table, Button } from 'react-bootstrap';
+import React, { useContext, useEffect, useState } from 'react';
+import { Button, Col, Container, Row, Table } from 'react-bootstrap';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
-import { useNotify } from '../hooks/notify.hook';
-import AddFormModal from './modals/AddFormModal';
-import DeleteFormModal from './modals/DeleteFormModal';
-import { ISaveUserResponse } from '../shared/interfaces/common';
-import { Notify } from './Notify';
-import { useUsers } from '../hooks/users.hook';
+import DeleteFormModalContainer from '../containers/DeleteFormModalContainer';
+import EditFormModalContainer from '../containers/EditFormModalContainer';
 import { AuthContext } from '../context/AuthContext';
 import {
-    saveUserController,
+    deleteUserController,
+    getUserController,
     getUsersController,
+    saveUserController,
+    editUserController,
 } from '../controllers/users.controller';
+import { useNotify } from '../hooks/notify.hook';
+import { IUser } from '../shared/interfaces/common';
+import AddFormModal from './modals/AddFormModal';
+import { Notify } from './Notify';
 
 const TableWrapper: any = styled.div`
     background: #fff;
@@ -41,14 +44,20 @@ const ActionsWrapper: any = styled.div`
     justify-content: space-around;
 `;
 
-const Users = () => {
+const Users = (props: any) => {
+    const {
+        modal: { isModalOpen, modalType },
+        openModal,
+    } = props;
     const { message, type, addNotification, show, setShow } = useNotify();
-    const { users, addUsers } = useContext(AuthContext);
+    const [selectedUser, setSelectedUser] = useState({});
+    const [editableUser, setEditabledUser] = useState({});
+    const authContext = useContext(AuthContext);
 
     const TableHeader = () => {
         const HEADERS: string[] = ['User ID', 'User Name', 'Age', 'Actions'];
-        const headerList = HEADERS.map((header) => (
-            <th key={uuidv4()}>{header}</th>
+        const headerList = HEADERS.map((header, i) => (
+            <th key={i}>{header}</th>
         ));
         return (
             <thead>
@@ -58,7 +67,7 @@ const Users = () => {
     };
 
     const TableBody = () => {
-        const bodyList = users.map((user) => (
+        const bodyList = authContext.users.map((user) => (
             <tr key={uuidv4()}>
                 <td key={uuidv4()}>{user.id}</td>
                 <td key={uuidv4()}>{user.name}</td>
@@ -66,8 +75,23 @@ const Users = () => {
                 <td key={uuidv4()}>
                     {
                         <ActionsWrapper>
-                            <Button variant='outline-info'>edit</Button>
-                            <Button variant='outline-danger'>delete</Button>
+                            <Button
+                                variant='outline-info'
+                                onClick={() => {
+                                    handleEditUser(user);
+                                }}
+                            >
+                                edit
+                            </Button>
+                            <Button
+                                variant='outline-danger'
+                                onClick={() => {
+                                    openModal('DELETE');
+                                    setSelectedUser(user);
+                                }}
+                            >
+                                delete
+                            </Button>
                         </ActionsWrapper>
                     }
                 </td>
@@ -82,11 +106,8 @@ const Users = () => {
     }): Promise<void> => {
         const { name, age } = formInput;
         try {
-            const data: ISaveUserResponse[] = await saveUserController(
-                name,
-                age
-            );
-            addUsers(data);
+            const data: IUser[] = await saveUserController(name, age);
+            authContext.addUsers(data);
             addNotification(`User ${name} was successfully created`, 'info');
         } catch (err) {
             addNotification(err.message, 'error');
@@ -95,15 +116,51 @@ const Users = () => {
 
     const getUsers = async (): Promise<void> => {
         try {
-            const data: ISaveUserResponse[] = await getUsersController();
-            addUsers(data);
+            const data: IUser[] = await getUsersController();
+            authContext.addUsers(data);
         } catch (err) {
             addNotification(err.message, 'error');
         }
     };
 
+    const getUser = async (user: IUser): Promise<void> => {
+        try {
+            const data: IUser = await getUserController(user);
+            setEditabledUser(data);
+        } catch (err) {
+            addNotification(err.message, 'error');
+        }
+    };
+
+    const deleteUser = async (user: IUser): Promise<void> => {
+        try {
+            const { name } = user;
+            const data: IUser = await deleteUserController(user);
+            authContext.deleteUser(data);
+            addNotification(`User ${name} was successfully removed`, 'info');
+        } catch (err) {
+            addNotification(err.message, 'error');
+        }
+    };
+
+    const editUser = async (user: IUser): Promise<void> => {
+        try {
+            const { name } = user;
+            const data: IUser = await editUserController(user);
+            authContext.editUser(data);
+            addNotification(`User ${name} was successfully changed`, 'info');
+        } catch (err) {
+            addNotification(err.message, 'error');
+        }
+    };
+
+    const handleEditUser = async (user: IUser) => {
+        await getUser(user);
+        openModal('EDIT');
+    };
+
     useEffect(() => {
-        if (!users.length) {
+        if (!authContext.users.length) {
             getUsers();
         }
     }, []);
@@ -111,6 +168,18 @@ const Users = () => {
     return (
         <Container>
             {show && <Notify message={message} type={type} setShow={setShow} />}
+            {isModalOpen && modalType === 'DELETE' && (
+                <DeleteFormModalContainer
+                    user={selectedUser}
+                    deleteUser={deleteUser}
+                />
+            )}
+            {isModalOpen && modalType === 'EDIT' && (
+                <EditFormModalContainer
+                    user={editableUser}
+                    editUser={editUser}
+                />
+            )}
             <TableWrapper>
                 <TableTitle>
                     <Row>
@@ -122,7 +191,7 @@ const Users = () => {
                         <Col sm={8} className='d-flex justify-content-end'>
                             <ModalWrapper>
                                 <AddFormModal saveUser={saveUser} />
-                                <DeleteFormModal />
+                                {/* <DeleteFormModal /> */}
                             </ModalWrapper>
                         </Col>
                     </Row>
