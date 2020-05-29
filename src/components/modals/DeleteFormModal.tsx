@@ -16,8 +16,6 @@ const DeleteFormModal = (props: any) => {
         handleClose();
     };
 
-    console.log('DELETE');
-
     return (
         <>
             <Modal show={isModalOpen} onHide={handleClose}>

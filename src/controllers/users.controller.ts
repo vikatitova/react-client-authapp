@@ -22,7 +22,13 @@ export const saveUserController = async (
 
 export const getUsersController = async (): Promise<IUser[]> => {
     try {
-        const { data } = await transportLayer.get('/users');
+        const {
+            data,
+        }: {
+            data: {
+                users: IUser[];
+            };
+        } = await transportLayer.get('/users');
         return data.users;
     } catch (err) {
         const { message } = err.data;
@@ -30,10 +36,15 @@ export const getUsersController = async (): Promise<IUser[]> => {
     }
 };
 
-export const getUserController = async (user: IUser): Promise<IUser> => {
+export const getUserController = async ({
+    id,
+}: {
+    id: string;
+}): Promise<IUser> => {
     try {
-        const { id } = user;
-        const { data } = await transportLayer.get(`/users/${id}`);
+        const { data }: { data: IUser } = await transportLayer.get(
+            `/users/${id}`
+        );
         return data;
     } catch (err) {
         const { message } = err.data;
@@ -41,20 +52,27 @@ export const getUserController = async (user: IUser): Promise<IUser> => {
     }
 };
 
-export const deleteUserController = async (user: any): Promise<any> => {
+export const deleteUserController = async ({
+    id,
+}: {
+    id: string;
+}): Promise<IUser> => {
     try {
-        const { id } = user;
-        await transportLayer.delete(`/users/${id}`);
-        return user;
+        const { data }: { data: IUser } = await transportLayer.delete(
+            `/users/${id}`
+        );
+        return data;
     } catch (err) {
         const { message } = err.data;
         throw new Error(message);
     }
 };
 
-export const editUserController = async (user: any): Promise<IUser> => {
+export const editUserController = async (user: IUser): Promise<IUser> => {
     try {
-        const { data } = await transportLayer.put(`/users`, { ...user });
+        const { data }: { data: IUser } = await transportLayer.put(`/users`, {
+            ...user,
+        });
         return data;
     } catch (err) {
         const { message } = err.data;

@@ -39,8 +39,6 @@ const EditFormModal = (props: any) => {
         handleClose();
     };
 
-    console.log('EDIT');
-
     return (
         <>
             <Modal show={isModalOpen} onHide={handleClose}>
