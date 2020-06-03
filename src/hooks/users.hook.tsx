@@ -3,6 +3,7 @@ import { IUser } from '../shared/interfaces/common';
 
 type IUsers = {
     users: IUser[];
+    clearUsers(): void;
     addUsers(users: IUser[]): void;
     deleteUser(user: IUser): void;
     editUser(user: IUser): void;
@@ -10,6 +11,10 @@ type IUsers = {
 
 export const useUsers = (): IUsers => {
     const [users, setUsers] = useState<IUser[]>([]);
+
+    const clearUsers = useCallback(() => {
+        setUsers([]);
+    }, []);
 
     const addUsers = useCallback((usersList) => {
         setUsers((users) => [...users, ...usersList]);
@@ -35,5 +40,5 @@ export const useUsers = (): IUsers => {
         [users]
     );
 
-    return { users, addUsers, deleteUser, editUser };
+    return { users, addUsers, deleteUser, editUser, clearUsers };
 };

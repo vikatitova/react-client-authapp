@@ -16,6 +16,7 @@ import { useNotify } from '../hooks/notify.hook';
 import { IUser } from '../shared/interfaces/common';
 import AddFormModal from './modals/AddFormModal';
 import { Notify } from './Notify';
+import Pagination from './Pagination';
 
 const TableWrapper: any = styled.div`
     background: #fff;
@@ -53,6 +54,11 @@ const Users = (props: any) => {
     const [selectedUser, setSelectedUser] = useState({});
     const [editableUser, setEditabledUser] = useState({});
     const authContext = useContext(AuthContext);
+
+    // Pagination
+    const [usersCount, setUsersCount] = useState(0);
+    const [activePaginationNumber, setActivePaginationNumber] = useState(1);
+    console.log(activePaginationNumber);
 
     const TableHeader = () => {
         const HEADERS: string[] = ['User ID', 'User Name', 'Age', 'Actions'];
@@ -106,8 +112,8 @@ const Users = (props: any) => {
     }): Promise<void> => {
         const { name, age } = formInput;
         try {
-            const data: IUser[] = await saveUserController(name, age);
-            authContext.addUsers(data);
+            await saveUserController(name, age);
+            getUsers();
             addNotification(`User ${name} was successfully created`, 'info');
         } catch (err) {
             addNotification(err.message, 'error');
@@ -116,8 +122,23 @@ const Users = (props: any) => {
 
     const getUsers = async (): Promise<void> => {
         try {
-            const data: IUser[] = await getUsersController();
-            authContext.addUsers(data);
+            const query = {
+                activePaginationNumber,
+                usersPerPage: 5,
+            };
+            const {
+                users,
+                usersCount,
+            }: {
+                users: IUser[];
+                usersCount: number;
+            } = await getUsersController(query);
+            if (activePaginationNumber > 1 && users.length === 0) {
+                setActivePaginationNumber(1);
+            }
+            setUsersCount(usersCount);
+            authContext.clearUsers();
+            authContext.addUsers(users);
         } catch (err) {
             addNotification(err.message, 'error');
         }
@@ -135,8 +156,8 @@ const Users = (props: any) => {
     const deleteUser = async (user: IUser): Promise<void> => {
         try {
             const { name } = user;
-            const data: IUser = await deleteUserController(user);
-            authContext.deleteUser(data);
+            await deleteUserController(user);
+            getUsers();
             addNotification(`User ${name} was successfully removed`, 'info');
         } catch (err) {
             addNotification(err.message, 'error');
@@ -160,10 +181,8 @@ const Users = (props: any) => {
     };
 
     useEffect(() => {
-        if (!authContext.users.length) {
-            getUsers();
-        }
-    }, []);
+        getUsers();
+    }, [activePaginationNumber]);
 
     return (
         <Container>
@@ -191,7 +210,6 @@ const Users = (props: any) => {
                         <Col sm={8} className='d-flex justify-content-end'>
                             <ModalWrapper>
                                 <AddFormModal saveUser={saveUser} />
-                                {/* <DeleteFormModal /> */}
                             </ModalWrapper>
                         </Col>
                     </Row>
@@ -201,6 +219,11 @@ const Users = (props: any) => {
                 <TableHeader />
                 <TableBody />
             </Table>
+            <Pagination
+                setActivePaginationNumber={setActivePaginationNumber}
+                activePaginationNumber={activePaginationNumber}
+                usersCount={usersCount}
+            />
         </Container>
     );
 };

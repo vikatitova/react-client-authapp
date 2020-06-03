@@ -25,14 +25,15 @@ export interface IUser {
 
 export interface IContextProps {
     token: string | undefined;
-    login(token: string | undefined, email: string): any;
-    logout(): any;
     email: string;
-    setAvatar(path: string): any;
     isAuthenticated: boolean;
     avatarSrc: string;
     users: IUser[];
-    addUsers(users: IUser[]): any;
-    deleteUser(user: any): any;
-    editUser(user: any): any;
+    login(token: string | undefined, email: string): void;
+    logout(): void;
+    setAvatar(path: string): void;
+    addUsers(users: IUser[]): void;
+    deleteUser(user: any): void;
+    editUser(user: any): void;
+    clearUsers(): void;
 }

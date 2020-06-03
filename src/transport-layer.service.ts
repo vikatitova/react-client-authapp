@@ -33,6 +33,8 @@ export default class TransportLayer implements ITransportLayer {
                             'Your session has been expired. Please, login again'
                         );
                     }
+                    localStorage.removeItem(STORAGE_NAME);
+                    window.location.replace('/login');
                     reject(err);
                 });
             }

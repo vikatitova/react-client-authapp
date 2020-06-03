@@ -3,14 +3,15 @@ import { IContextProps, IUser } from '../shared/interfaces/common';
 
 export const AuthContext = createContext({
     token: '',
-    login: (token: string | undefined, email: string): any => {},
-    logout: (): any => {},
-    email: '',
-    setAvatar: (path: string): any => {},
     isAuthenticated: false,
     avatarSrc: '',
     users: [],
-    addUsers: (users: IUser[]): any => {},
-    deleteUser: (user: any): any => {},
-    editUser: (user: any): any => {},
+    email: '',
+    login: (token: string | undefined, email: string): void => {},
+    logout: (): void => {},
+    setAvatar: (path: string): void => {},
+    addUsers: (users: IUser[]): void => {},
+    deleteUser: (user: any): void => {},
+    editUser: (user: any): void => {},
+    clearUsers: (): void => {},
 } as IContextProps);

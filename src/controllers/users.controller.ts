@@ -20,16 +20,25 @@ export const saveUserController = async (
     }
 };
 
-export const getUsersController = async (): Promise<IUser[]> => {
+export const getUsersController = async (query: {
+    activePaginationNumber: number;
+    usersPerPage: number;
+}): Promise<{
+    users: IUser[];
+    usersCount: number;
+}> => {
     try {
-        const {
-            data,
-        }: {
-            data: {
-                users: IUser[];
-            };
-        } = await transportLayer.get('/users');
-        return data.users;
+        const { activePaginationNumber: pageNumber, usersPerPage } = query;
+        const { data } = await transportLayer.get('/users', {
+            params: {
+                pageNumber,
+                usersPerPage,
+            },
+        });
+        return {
+            users: data.users,
+            usersCount: data.usersCount,
+        };
     } catch (err) {
         const { message } = err.data;
         throw new Error(message);
