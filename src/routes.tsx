@@ -4,6 +4,7 @@ import AuthForm from './components/AuthForm';
 import Home from './components/Home';
 import UsersContainer from './containers/UsersContainer';
 import { IRouteProps } from './shared/interfaces/common';
+import Chat from './components/Chat';
 
 const PrivateRoute = ({
     component: Component,
@@ -54,6 +55,13 @@ export const useRoutes = (isAuthenticated: boolean) => {
                 component={UsersContainer}
                 isAuthenticated={isAuthenticated}
                 path='/users'
+                exact
+            />
+
+            <PrivateRoute
+                component={Chat}
+                isAuthenticated={isAuthenticated}
+                path='/chat'
                 exact
             />
 

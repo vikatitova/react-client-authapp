@@ -106,6 +106,11 @@ const Header = () => {
                         {isAuthenticated && (
                             <>
                                 <Nav.Item>
+                                    <Nav.Link as={Link} to='/chat'>
+                                        <Button variant='info'>Chat</Button>
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
                                     <Nav.Link as={Link} to='/users'>
                                         <Button variant='warning'>Users</Button>
                                     </Nav.Link>

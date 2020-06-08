@@ -3,3 +3,5 @@ export const AuthFormMapping: { [key: string]: string } = {
     '/login': 'Log in',
 };
 export const STORAGE_NAME = 'userData';
+
+export const uri = 'http://localhost:3337';
